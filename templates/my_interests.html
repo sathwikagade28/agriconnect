@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}My Interests — AGRICONNECT{% endblock %}
+{% block content %}
+
+<h2 style="font-size:1.6rem;" class="mb-4">My Interest Requests</h2>
+
+{% if requests_sent|length == 0 %}
+    <div class="panel-alt p-4 text-center">
+        <p class="text-muted-agri mb-0">You haven't sent any interest requests yet. <a href="{{ url_for('marketplace') }}" class="link-agri">Browse the Marketplace</a> to find produce.</p>
+    </div>
+{% else %}
+    {% for req in requests_sent %}
+    <div class="card-agri p-3 mb-3">
+        <h3 style="font-size:1.1rem;" class="mb-1">{{ req.listing.crop_name }}</h3>
+        <p class="text-muted-agri mb-1">
+            {{ req.listing.quantity }} {{ req.listing.unit }} · ₹{{ "%.2f"|format(req.listing.price_per_unit) }} / {{ req.listing.unit }} · {{ req.listing.location }}
+        </p>
+        <p class="mb-1"><span class="fw-semibold">Farmer:</span> {{ req.listing.farmer.name }} — {{ req.listing.farmer.phone }}</p>
+        {% if req.message %}
+            <p class="text-muted-agri mb-1" style="font-size:0.9rem;">Your message: "{{ req.message }}"</p>
+        {% endif %}
+        <p class="text-muted-agri mb-0" style="font-size:0.85rem;">Sent {{ req.date_sent.strftime('%d %b %Y') }}</p>
+    </div>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}

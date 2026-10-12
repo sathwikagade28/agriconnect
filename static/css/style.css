@@ -1,0 +1,111 @@
+:root {
+    --color-primary: #2F5233;
+    --color-primary-dark: #203A24;
+    --color-accent: #C9973B;
+    --color-accent-light: #F1DDB0;
+    --color-bg: #FBFAF7;
+    --color-surface: #FFFFFF;
+    --color-surface-alt: #EEF3EA;
+    --color-text: #24261F;
+    --color-text-muted: #5C6155;
+    --radius: 10px;
+}
+
+body {
+    font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
+h1, h2, h3, .brand {
+    font-family: 'Fraunces', 'Georgia', serif;
+    font-weight: 600;
+    color: var(--color-primary-dark);
+}
+
+.navbar-agri { background-color: var(--color-primary); }
+.navbar-agri .navbar-brand, .navbar-agri .nav-link { color: #FFFDF8 !important; }
+.navbar-agri .nav-link:hover { color: var(--color-accent-light) !important; }
+
+.btn-agri-primary {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+    border-radius: var(--radius);
+    font-weight: 600;
+}
+.btn-agri-primary:hover { background-color: var(--color-primary-dark); border-color: var(--color-primary-dark); color: #fff; }
+
+.btn-agri-outline {
+    background-color: transparent;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    border-radius: var(--radius);
+    font-weight: 600;
+}
+.btn-agri-outline:hover { background-color: var(--color-primary); color: #fff; }
+
+.btn-agri-danger {
+    background-color: transparent;
+    border: 2px solid #A3372A;
+    color: #A3372A;
+    border-radius: var(--radius);
+    font-weight: 600;
+}
+.btn-agri-danger:hover { background-color: #A3372A; color: #fff; }
+
+.card-agri {
+    background-color: var(--color-surface);
+    border: 1px solid #E4E2D8;
+    border-radius: var(--radius);
+    box-shadow: 0 2px 10px rgba(47, 82, 51, 0.06);
+}
+.panel-alt { background-color: var(--color-surface-alt); border-radius: var(--radius); }
+
+.role-option input[type="radio"] { display: none; }
+.role-card {
+    border: 2px solid #E4E2D8;
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    background-color: var(--color-surface);
+}
+.role-card:hover { border-color: var(--color-accent); }
+.role-option input[type="radio"]:checked + .role-card { border-color: var(--color-primary); background-color: var(--color-surface-alt); }
+.role-card .role-icon { font-size: 1.8rem; display: block; margin-bottom: 0.4rem; }
+
+.hero-agri {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: #FFFDF8;
+    border-radius: var(--radius);
+}
+.hero-agri .accent-underline { display: inline-block; height: 4px; width: 64px; background-color: var(--color-accent); border-radius: 4px; margin: 0.75rem 0 1.25rem 0; }
+
+.text-muted-agri { color: var(--color-text-muted); }
+.link-agri { color: var(--color-primary); font-weight: 600; text-decoration: none; }
+.link-agri:hover { color: var(--color-accent); text-decoration: underline; }
+
+.badge-agri {
+    background-color: var(--color-surface-alt);
+    color: var(--color-primary-dark);
+    border-radius: 999px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+}
+.price-tag {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    color: var(--color-primary-dark);
+    font-size: 1.3rem;
+}
+.listing-card {
+    transition: transform 0.12s ease-in-out, box-shadow 0.12s ease-in-out;
+}
+.listing-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(47, 82, 51, 0.12);
+}

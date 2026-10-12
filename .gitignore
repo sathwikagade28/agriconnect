@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Flask / SQLite database — everyone gets their own fresh, auto-seeded copy locally
+instance/
+*.db
+
+# Virtual environment (if you ever set one up)
+venv/
+env/
+.venv/
+
+# VS Code personal settings
+.vscode/
+
+# OS junk files
+.DS_Store
+Thumbs.db

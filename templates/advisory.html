@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Crop Advisory — AGRICONNECT{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card-agri p-4 p-md-5 mb-4">
+            <h2 class="mb-1" style="font-size:1.6rem;">Crop Advisory</h2>
+            <p class="text-muted-agri mb-4">
+                Select your crop, soil condition, and what you're observing to get guidance.
+            </p>
+
+            <form method="POST" action="{{ url_for('advisory') }}">
+                <div class="mb-3">
+                    <label for="crop" class="form-label fw-semibold">Crop</label>
+                    <select class="form-select" id="crop" name="crop">
+                        {% for c in crops %}
+                            <option value="{{ c }}" {% if c == selected.crop %}selected{% endif %}>{{ c }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="soil" class="form-label fw-semibold">Soil Condition</label>
+                    <select class="form-select" id="soil" name="soil">
+                        {% for s in soils %}
+                            <option value="{{ s }}" {% if s == selected.soil %}selected{% endif %}>{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="symptom" class="form-label fw-semibold">What are you observing?</label>
+                    <select class="form-select" id="symptom" name="symptom">
+                        {% for sym in symptoms %}
+                            <option value="{{ sym }}" {% if sym == selected.symptom %}selected{% endif %}>{{ sym }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-agri-primary w-100 py-2">Get Advisory</button>
+            </form>
+        </div>
+
+        {% if result %}
+        <div class="card-agri p-4 p-md-5" style="border-left: 4px solid var(--color-accent);">
+            <div class="badge-agri mb-2">Likely Issue</div>
+            <h3 style="font-size:1.3rem;" class="mb-3">{{ result.issue }}</h3>
+
+            <div class="badge-agri mb-2">Recommendation</div>
+            <p class="mb-4">{{ result.recommendation }}</p>
+
+            <div class="panel-alt p-3">
+                <p class="mb-0 text-muted-agri" style="font-size:0.85rem;">
+                    ⚠️ This is general guidance based on common patterns and is not a confirmed diagnosis.
+                    Please consult your local agriculture officer or Krishi Vigyan Kendra before taking
+                    action, especially for high-value crops.
+                </p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

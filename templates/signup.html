@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Sign Up — AGRICONNECT{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card-agri p-4 p-md-5">
+            <h2 class="mb-1" style="font-size:1.6rem;">Create your account</h2>
+            <p class="text-muted-agri mb-4">Join AGRICONNECT as a farmer or a buyer.</p>
+            <form method="POST" action="{{ url_for('signup') }}">
+                <label class="form-label fw-semibold">I am a...</label>
+                <div class="row mb-4">
+                    <div class="col-6 role-option">
+                        <input type="radio" name="role" id="role-farmer" value="farmer" checked>
+                        <label for="role-farmer" class="role-card d-block">
+                            <span class="role-icon">🌾</span>
+                            <span class="fw-semibold">Farmer</span>
+                        </label>
+                    </div>
+                    <div class="col-6 role-option">
+                        <input type="radio" name="role" id="role-buyer" value="buyer">
+                        <label for="role-buyer" class="role-card d-block">
+                            <span class="role-icon">🛒</span>
+                            <span class="fw-semibold">Buyer</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label fw-semibold">Full Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="e.g. Ramesh Kumar" required>
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label fw-semibold">Phone Number</label>
+                    <input type="tel" class="form-control phone-input" id="phone" name="phone"
+                           placeholder="10-digit mobile number" maxlength="10" pattern="\d{10}"
+                           title="Enter exactly 10 digits" required>
+                    <div class="form-text text-muted-agri">Must be exactly 10 digits, numbers only.</div>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label fw-semibold">Password</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="password" name="password" required>
+                        <button type="button" class="btn btn-agri-outline toggle-password" data-target="password">Show</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-agri-primary w-100 py-2">Create Account</button>
+            </form>
+            <p class="text-center mt-4 mb-0">
+                Already have an account? <a href="{{ url_for('login') }}" class="link-agri">Log in</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

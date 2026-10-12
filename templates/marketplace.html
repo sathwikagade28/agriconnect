@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Marketplace — AGRICONNECT{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h2 style="font-size:1.6rem;" class="mb-0">Marketplace</h2>
+    {% if session.get('user_role') == 'farmer' %}
+        <a href="{{ url_for('add_listing') }}" class="btn btn-agri-primary">+ List Produce</a>
+    {% endif %}
+</div>
+
+<div class="card-agri p-3 mb-4">
+    <form method="GET" action="{{ url_for('marketplace') }}" class="row g-2 align-items-end">
+        <div class="col-sm-5">
+            <label class="form-label fw-semibold mb-1">Crop</label>
+            <input type="text" class="form-control" name="crop" value="{{ crop_query }}" placeholder="e.g. Tomato">
+        </div>
+        <div class="col-sm-5">
+            <label class="form-label fw-semibold mb-1">Location</label>
+            <input type="text" class="form-control" name="location" value="{{ location_query }}" placeholder="e.g. Nalgonda">
+        </div>
+        <div class="col-sm-2">
+            <button type="submit" class="btn btn-agri-primary w-100">Search</button>
+        </div>
+    </form>
+</div>
+
+{% if listings|length == 0 %}
+    <div class="panel-alt p-4 text-center">
+        <p class="text-muted-agri mb-0">No listings found. Try a different search, or check back later.</p>
+    </div>
+{% else %}
+    <div class="row g-3">
+        {% for listing in listings %}
+        <div class="col-md-4">
+            <div class="card-agri listing-card p-3 h-100 d-flex flex-column">
+                <div class="badge-agri mb-2" style="align-self:flex-start;">{{ listing.location }}</div>
+                <h3 style="font-size:1.15rem;" class="mb-1">{{ listing.crop_name }}</h3>
+                <p class="text-muted-agri mb-1">{{ listing.quantity }} {{ listing.unit }} available</p>
+                <p class="price-tag mb-2">₹{{ "%.2f"|format(listing.price_per_unit) }} / {{ listing.unit }}</p>
+                {% if listing.description %}
+                    <p class="text-muted-agri mb-3" style="font-size:0.9rem;">{{ listing.description }}</p>
+                {% endif %}
+                <a href="{{ url_for('listing_detail', listing_id=listing.id) }}" class="btn btn-agri-outline mt-auto">View Details</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% endblock %}

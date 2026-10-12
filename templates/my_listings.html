@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}My Listings — AGRICONNECT{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h2 style="font-size:1.6rem;" class="mb-0">My Listings</h2>
+    <a href="{{ url_for('add_listing') }}" class="btn btn-agri-primary">+ List Produce</a>
+</div>
+
+{% if listings|length == 0 %}
+    <div class="panel-alt p-4 text-center">
+        <p class="text-muted-agri mb-0">You haven't listed any produce yet.</p>
+    </div>
+{% else %}
+    {% for listing in listings %}
+    <div class="card-agri p-3 mb-3">
+        <div class="d-flex justify-content-between flex-wrap gap-2">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <h3 style="font-size:1.1rem;" class="mb-0">{{ listing.crop_name }}</h3>
+                    {% if not listing.is_active %}
+                        <span class="badge-agri" style="background-color:#EEE; color:#777;">Sold</span>
+                    {% endif %}
+                </div>
+                <p class="text-muted-agri mb-1">{{ listing.quantity }} {{ listing.unit }} · ₹{{ "%.2f"|format(listing.price_per_unit) }} / {{ listing.unit }} · {{ listing.location }}</p>
+                <p class="text-muted-agri mb-0" style="font-size:0.85rem;">
+                    {{ listing.contact_requests|length }} interest request(s) received
+                </p>
+            </div>
+            <div class="d-flex align-items-start gap-2 flex-wrap">
+                <a href="{{ url_for('edit_listing', listing_id=listing.id) }}" class="btn btn-agri-outline btn-sm">Edit</a>
+                {% if listing.is_active %}
+                <form method="POST" action="{{ url_for('mark_sold', listing_id=listing.id) }}" onsubmit="return confirm('Mark this listing as sold? It will be removed from the Marketplace.');">
+                    <button type="submit" class="btn btn-agri-outline btn-sm">Mark as Sold</button>
+                </form>
+                {% endif %}
+                <form method="POST" action="{{ url_for('delete_listing', listing_id=listing.id) }}" onsubmit="return confirm('Delete this listing permanently? This cannot be undone.');">
+                    <button type="submit" class="btn btn-agri-danger btn-sm">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}AGRICONNECT — Home{% endblock %}
+{% block content %}
+<div class="hero-agri p-5 mb-4">
+    <h1 class="text-white" style="font-size:2.4rem;">Direct market access.<br>Smarter crop decisions.</h1>
+    <span class="accent-underline"></span>
+    <p class="mb-4" style="max-width: 560px; color:#EFEADF;">
+        AGRICONNECT connects farmers directly with buyers, offers rule-based crop advisory,
+        and helps farmers discover government subsidies they're eligible for — all in one place.
+    </p>
+    {% if not session.get('user_id') %}
+        <a href="{{ url_for('signup') }}" class="btn btn-agri-primary btn-lg me-2">Get Started</a>
+        <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg">Log In</a>
+    {% else %}
+        <a href="{{ url_for('dashboard') }}" class="btn btn-agri-primary btn-lg">Go to Dashboard</a>
+    {% endif %}
+</div>
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card-agri p-4 h-100">
+            <h3 style="font-size:1.2rem;">🌾 Marketplace</h3>
+            <p class="text-muted-agri mb-0">List your produce or browse listings — connect directly, skip the middleman.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-agri p-4 h-100">
+            <h3 style="font-size:1.2rem;">🌱 Crop Advisory</h3>
+            <p class="text-muted-agri mb-0">Select your crop, soil, and symptom to get a recommended course of action.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-agri p-4 h-100">
+            <h3 style="font-size:1.2rem;">🏛️ Subsidy Finder</h3>
+            <p class="text-muted-agri mb-0">Find government schemes you may be eligible for, based on your region and crop.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

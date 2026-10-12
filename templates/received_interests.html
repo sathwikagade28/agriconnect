@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Interest Requests — AGRICONNECT{% endblock %}
+{% block content %}
+
+<h2 style="font-size:1.6rem;" class="mb-4">Interest Requests Received</h2>
+
+{% if requests_received|length == 0 %}
+    <div class="panel-alt p-4 text-center">
+        <p class="text-muted-agri mb-0">No buyers have expressed interest in your listings yet.</p>
+    </div>
+{% else %}
+    {% for req in requests_received %}
+    <div class="card-agri p-3 mb-3">
+        <h3 style="font-size:1.1rem;" class="mb-1">{{ req.listing.crop_name }}</h3>
+        <p class="mb-1"><span class="fw-semibold">Buyer:</span> {{ req.buyer.name }} — {{ req.buyer.phone }}</p>
+        {% if req.message %}
+            <p class="text-muted-agri mb-1" style="font-size:0.9rem;">Message: "{{ req.message }}"</p>
+        {% endif %}
+        <p class="text-muted-agri mb-0" style="font-size:0.85rem;">Received {{ req.date_sent.strftime('%d %b %Y') }}</p>
+    </div>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}

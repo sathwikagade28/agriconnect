@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Edit Listing — AGRICONNECT{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card-agri p-4 p-md-5">
+            <h2 class="mb-1" style="font-size:1.6rem;">Edit Listing</h2>
+            <p class="text-muted-agri mb-4">Update the details of your produce listing.</p>
+
+            <form method="POST" action="{{ url_for('edit_listing', listing_id=listing.id) }}">
+                <div class="mb-3">
+                    <label for="crop_name" class="form-label fw-semibold">Crop Name</label>
+                    <input type="text" class="form-control" id="crop_name" name="crop_name" value="{{ listing.crop_name }}" required>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-7">
+                        <label for="quantity" class="form-label fw-semibold">Quantity</label>
+                        <input type="number" step="0.1" min="0.1" class="form-control" id="quantity" name="quantity" value="{{ listing.quantity }}" required>
+                    </div>
+                    <div class="col-5">
+                        <label for="unit" class="form-label fw-semibold">Unit</label>
+                        <select class="form-select" id="unit" name="unit">
+                            {% for u in units %}
+                                <option value="{{ u }}" {% if u == listing.unit %}selected{% endif %}>{{ u }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="price_per_unit" class="form-label fw-semibold">Price per unit (₹)</label>
+                    <input type="number" step="0.01" min="0.01" class="form-control" id="price_per_unit" name="price_per_unit" value="{{ listing.price_per_unit }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="location" class="form-label fw-semibold">Location</label>
+                    <input type="text" class="form-control" id="location" name="location" value="{{ listing.location }}" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="description" class="form-label fw-semibold">Description (optional)</label>
+                    <textarea class="form-control" id="description" name="description" rows="3">{{ listing.description or '' }}</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-agri-primary w-100 py-2">Save Changes</button>
+            </form>
+
+            <p class="text-center mt-4 mb-0"><a href="{{ url_for('my_listings') }}" class="link-agri">← Back to My Listings</a></p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

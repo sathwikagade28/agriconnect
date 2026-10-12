@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}List Produce — AGRICONNECT{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card-agri p-4 p-md-5">
+            <h2 class="mb-1" style="font-size:1.6rem;">List Your Produce</h2>
+            <p class="text-muted-agri mb-4">Fill in the details below. Buyers will be able to see and contact you about this listing.</p>
+
+            <form method="POST" action="{{ url_for('add_listing') }}">
+                <div class="mb-3">
+                    <label for="crop_name" class="form-label fw-semibold">Crop Name</label>
+                    <input type="text" class="form-control" id="crop_name" name="crop_name" placeholder="e.g. Tomato" required>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-7">
+                        <label for="quantity" class="form-label fw-semibold">Quantity</label>
+                        <input type="number" step="0.1" min="0.1" class="form-control" id="quantity" name="quantity" placeholder="e.g. 50" required>
+                    </div>
+                    <div class="col-5">
+                        <label for="unit" class="form-label fw-semibold">Unit</label>
+                        <select class="form-select" id="unit" name="unit">
+                            {% for u in units %}
+                                <option value="{{ u }}">{{ u }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="price_per_unit" class="form-label fw-semibold">Price per unit (₹)</label>
+                    <input type="number" step="0.01" min="0.01" class="form-control" id="price_per_unit" name="price_per_unit" placeholder="e.g. 25.50" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="location" class="form-label fw-semibold">Location</label>
+                    <input type="text" class="form-control" id="location" name="location" placeholder="e.g. Nalgonda, Telangana" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="description" class="form-label fw-semibold">Description (optional)</label>
+                    <textarea class="form-control" id="description" name="description" rows="3" placeholder="Any extra details buyers should know"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-agri-primary w-100 py-2">List Produce</button>
+            </form>
+
+            <p class="text-center mt-4 mb-0"><a href="{{ url_for('marketplace') }}" class="link-agri">← Back to Marketplace</a></p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

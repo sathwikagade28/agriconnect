@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{{ listing.crop_name }} — AGRICONNECT{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card-agri p-4 p-md-5">
+            <div class="badge-agri mb-2">{{ listing.location }}</div>
+            <h2 style="font-size:1.7rem;" class="mb-2">{{ listing.crop_name }}</h2>
+            <p class="price-tag mb-1">₹{{ "%.2f"|format(listing.price_per_unit) }} / {{ listing.unit }}</p>
+            <p class="text-muted-agri mb-3">{{ listing.quantity }} {{ listing.unit }} available</p>
+
+            {% if listing.description %}
+                <p class="mb-3">{{ listing.description }}</p>
+            {% endif %}
+
+            <p class="text-muted-agri mb-4" style="font-size:0.9rem;">
+                Listed by {{ listing.farmer.name }} · Posted {{ listing.date_posted.strftime('%d %b %Y') }}
+            </p>
+
+            {% if session.get('user_role') == 'buyer' %}
+                {% if already_contacted %}
+                    <div class="panel-alt p-3">
+                        <p class="mb-1 fw-semibold">You've already sent an interest request for this listing.</p>
+                        <p class="text-muted-agri mb-0">Farmer's contact number: {{ listing.farmer.phone }}</p>
+                    </div>
+                {% else %}
+                    <form method="POST" action="{{ url_for('contact_farmer', listing_id=listing.id) }}">
+                        <label for="message" class="form-label fw-semibold">Message to farmer (optional)</label>
+                        <textarea class="form-control mb-3" id="message" name="message" rows="3"
+                                  placeholder="e.g. Interested in buying 20kg, is that available?"></textarea>
+                        <button type="submit" class="btn btn-agri-primary">Send Interest & View Contact Info</button>
+                    </form>
+                {% endif %}
+            {% elif session.get('user_role') == 'farmer' and listing.farmer_id == session.get('user_id') %}
+                <div class="panel-alt p-3">
+                    <p class="mb-0 text-muted-agri">This is your own listing. Manage it from <a href="{{ url_for('my_listings') }}" class="link-agri">My Listings</a>.</p>
+                </div>
+            {% endif %}
+
+            <p class="mt-4 mb-0"><a href="{{ url_for('marketplace') }}" class="link-agri">← Back to Marketplace</a></p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
