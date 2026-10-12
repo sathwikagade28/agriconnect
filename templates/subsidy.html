@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Subsidy Finder — AGRICONNECT{% endblock %}
+{% block content %}
+
+<div class="card-agri p-4 p-md-5 mb-4">
+    <h2 class="mb-1" style="font-size:1.6rem;">🏛️ Subsidy Eligibility Finder</h2>
+    <p class="text-muted-agri mb-4">
+        Select your region, crop, and land size to see government schemes you may be eligible for.
+    </p>
+
+    <form method="POST" action="{{ url_for('subsidy') }}">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label for="region" class="form-label fw-semibold">Region</label>
+                <select class="form-select" id="region" name="region" required>
+                    {% for r in regions %}
+                        <option value="{{ r }}" {% if selected.region == r %}selected{% endif %}>{{ r }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="crop" class="form-label fw-semibold">Crop</label>
+                <select class="form-select" id="crop" name="crop" required>
+                    {% for c in crops %}
+                        <option value="{{ c }}" {% if selected.crop == c %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="land_category" class="form-label fw-semibold">Land Size</label>
+                <select class="form-select" id="land_category" name="land_category" required>
+                    {% for l in land_categories %}
+                        <option value="{{ l }}" {% if selected.land_category == l %}selected{% endif %}>{{ l }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-agri-primary mt-4 px-4">Check Eligibility</button>
+    </form>
+</div>
+
+{% if results is not none %}
+    <h3 class="mb-3" style="font-size:1.2rem;">
+        {% if results|length > 0 %}
+            {{ results|length }} scheme{{ 's' if results|length != 1 else '' }} you may be eligible for
+        {% else %}
+            No matching schemes
+        {% endif %}
+    </h3>
+
+    {% for scheme in results %}
+        <div class="card-agri p-4 mb-3">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                <h4 class="mb-2" style="font-size:1.05rem;">{{ scheme.scheme_name }}</h4>
+                <div>
+                    {% if scheme.region != 'Any' %}<span class="badge-agri me-1">{{ scheme.region }}</span>{% endif %}
+                    {% if scheme.crop != 'Any' %}<span class="badge-agri me-1">{{ scheme.crop }}</span>{% endif %}
+                    {% if scheme.land_category != 'Any' %}<span class="badge-agri">{{ scheme.land_category }}</span>{% endif %}
+                </div>
+            </div>
+            <p class="mb-2"><span class="fw-semibold">Benefit: </span>{{ scheme.benefit }}</p>
+            <p class="mb-0 text-muted-agri"><span class="fw-semibold text-body">How to apply: </span>{{ scheme.how_to_apply }}</p>
+        </div>
+    {% endfor %}
+
+    <div class="panel-alt p-4 mt-4">
+        <p class="mb-0 text-muted-agri">
+            <span class="fw-semibold text-body">Note:</span> Eligibility shown here is based on simplified
+            region/crop/land-size rules for guidance only. Scheme terms and documentation requirements can
+            change — please confirm current details with your local Agriculture Department or Krishi Vigyan
+            Kendra (KVK) before applying.
+        </p>
+    </div>
+{% endif %}
+
+{% endblock %}

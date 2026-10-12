@@ -2,13 +2,16 @@
 AGRICONNECT - Main Flask Application
 User Module:        Signup, Login, Logout, Dashboard, Edit Profile, Change Password
 Marketplace Module: Add/Edit/Delete Listing, Browse/Search Listings, Contact Requests
+Advisory Module:    Rule-based crop/soil/symptom advisory
+Subsidy Module:     Rule-based region/crop/land-size scheme eligibility
 """
 
 from datetime import datetime, timedelta
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import db, User, Listing, ContactRequest, AdvisoryRule
+from models import db, User, Listing, ContactRequest, AdvisoryRule, SubsidyRule
 from advisory_data import CROPS, SOILS, SYMPTOMS, BASE_RULES, SOIL_OVERRIDES
+from subsidy_data import REGIONS, LAND_CATEGORIES, SCHEME_RULES
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'change-this-secret-key-later'
@@ -22,7 +25,7 @@ db.init_app(app)
 def seed_advisory_rules():
     """Populate the AdvisoryRule table from advisory_data.py, only if it's empty."""
     if AdvisoryRule.query.first() is not None:
-        return   # already seeded
+        return
 
     rows = []
     for crop in CROPS:
@@ -41,9 +44,25 @@ def seed_advisory_rules():
     db.session.commit()
 
 
+def seed_subsidy_rules():
+    """Populate the SubsidyRule table from subsidy_data.py, only if it's empty."""
+    if SubsidyRule.query.first() is not None:
+        return
+
+    rows = []
+    for scheme_name, region, crop, land_category, benefit, how_to_apply in SCHEME_RULES:
+        rows.append(SubsidyRule(
+            scheme_name=scheme_name, region=region, crop=crop, land_category=land_category,
+            benefit=benefit, how_to_apply=how_to_apply
+        ))
+    db.session.bulk_save_objects(rows)
+    db.session.commit()
+
+
 with app.app_context():
     db.create_all()
     seed_advisory_rules()
+    seed_subsidy_rules()
 
 MAX_LOGIN_ATTEMPTS = 5
 LOCKOUT_MINUTES = 15
@@ -247,7 +266,6 @@ def change_password():
 
 @app.route('/marketplace')
 def marketplace():
-    """Browse + search all active listings. Open to any logged-in user."""
     if not login_required():
         flash("Please log in to continue.", "error")
         return redirect(url_for('login'))
@@ -538,6 +556,58 @@ def advisory():
 
     return render_template('advisory.html', crops=CROPS, soils=SOILS, symptoms=SYMPTOMS,
                             selected=selected, result=result)
+
+
+# ============================================================
+# SUBSIDY ELIGIBILITY MODULE
+# ============================================================
+
+def get_subsidies(region, crop, land_category):
+    """
+    Rule-based multi-match lookup. Unlike get_advisory(), this can return
+    several matching schemes at once, since a farmer is usually eligible
+    for more than one government scheme simultaneously.
+
+    A scheme matches if, for each of region/crop/land_category, the scheme's
+    stored value is either 'Any' (no restriction) or exactly equal to the
+    farmer's selected value.
+    """
+    all_schemes = SubsidyRule.query.all()
+    matches = []
+    for scheme in all_schemes:
+        region_ok = scheme.region == 'Any' or scheme.region == region
+        crop_ok = scheme.crop == 'Any' or scheme.crop == crop
+        land_ok = scheme.land_category == 'Any' or scheme.land_category == land_category
+        if region_ok and crop_ok and land_ok:
+            matches.append(scheme)
+    return matches
+
+
+@app.route('/subsidy', methods=['GET', 'POST'])
+def subsidy():
+    if not login_required():
+        flash("Please log in to continue.", "error")
+        return redirect(url_for('login'))
+
+    results = None
+    selected = {'region': REGIONS[0], 'crop': CROPS[0], 'land_category': LAND_CATEGORIES[0]}
+
+    if request.method == 'POST':
+        region = request.form.get('region', '')
+        crop = request.form.get('crop', '')
+        land_category = request.form.get('land_category', '')
+        selected = {'region': region, 'crop': crop, 'land_category': land_category}
+
+        if region not in REGIONS or crop not in CROPS or land_category not in LAND_CATEGORIES:
+            flash("Please select a valid region, crop, and land size.", "error")
+        else:
+            results = get_subsidies(region, crop, land_category)
+            if len(results) == 0:
+                flash("No matching schemes found for this combination. Please check with your "
+                      "local Agriculture Department for the latest scheme information.", "error")
+
+    return render_template('subsidy.html', regions=REGIONS, crops=CROPS,
+                            land_categories=LAND_CATEGORIES, selected=selected, results=results)
 
 
 if __name__ == '__main__':

@@ -1,7 +1,9 @@
 """
 AGRICONNECT - Database Models
-User Module:        User table
+User Module:         User table
 Marketplace Module:  Listing table, ContactRequest table
+Advisory Module:      AdvisoryRule table
+Subsidy Module:        SubsidyRule table
 """
 
 from flask_sqlalchemy import SQLAlchemy
@@ -31,13 +33,13 @@ class Listing(db.Model):
 
     crop_name = db.Column(db.String(80), nullable=False)
     quantity = db.Column(db.Float, nullable=False)
-    unit = db.Column(db.String(20), nullable=False, default='kg')   # kg or quintal
+    unit = db.Column(db.String(20), nullable=False, default='kg')
     price_per_unit = db.Column(db.Float, nullable=False)
     location = db.Column(db.String(120), nullable=False)
     description = db.Column(db.String(300), nullable=True)
 
     date_posted = db.Column(db.DateTime, default=datetime.utcnow)
-    is_active = db.Column(db.Boolean, default=True, nullable=False)   # False = marked as sold
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
 
     farmer = db.relationship('User', backref='listings')
 
@@ -63,17 +65,33 @@ class AdvisoryRule(db.Model):
     """
     A single row of the rule-based Crop Advisory engine.
     crop + symptom (+ optional soil) -> issue + recommendation.
-
     soil = 'Any' means this rule applies regardless of soil condition.
-    A more specific (crop, soil, symptom) match is preferred over a
-    (crop, 'Any', symptom) match when both exist — see get_advisory() in app.py.
     """
     id = db.Column(db.Integer, primary_key=True)
     crop = db.Column(db.String(50), nullable=False)
-    soil = db.Column(db.String(30), nullable=False, default='Any')   # Normal / Waterlogged / Dry / Any
+    soil = db.Column(db.String(30), nullable=False, default='Any')
     symptom = db.Column(db.String(80), nullable=False)
     issue = db.Column(db.String(120), nullable=False)
     recommendation = db.Column(db.String(300), nullable=False)
 
     def __repr__(self):
         return f"<AdvisoryRule {self.crop}/{self.soil}/{self.symptom} -> {self.issue}>"
+
+
+class SubsidyRule(db.Model):
+    """
+    A single government scheme entry for the Subsidy Eligibility Module.
+    region / crop / land_category = 'Any' means that field doesn't restrict eligibility.
+    A farmer's (region, crop, land_category) input can match MULTIPLE schemes at once,
+    unlike AdvisoryRule which returns a single best match.
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    scheme_name = db.Column(db.String(120), nullable=False)
+    region = db.Column(db.String(50), nullable=False, default='Any')
+    crop = db.Column(db.String(50), nullable=False, default='Any')
+    land_category = db.Column(db.String(30), nullable=False, default='Any')
+    benefit = db.Column(db.String(300), nullable=False)
+    how_to_apply = db.Column(db.String(250), nullable=False)
+
+    def __repr__(self):
+        return f"<SubsidyRule {self.scheme_name} ({self.region}/{self.crop}/{self.land_category})>"
